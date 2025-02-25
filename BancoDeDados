@@ -1,0 +1,35 @@
+# Banco de Dados
+
+## usuario
+-id (celular)
+-numero (cel)
+-instagram
+-nome
+-tamanho
+-recomendação -> gostos 
+
+## gostos
+-id -> usuario
+-caracteristicas -> dados da loja
+-compras
+-carrinho
+
+## dados da loja
+-id
+-tipo
+-cor
+-tamanho
+-preço
+-estação
+-imagem
+-disponibilidade
+
+## carrinho
+-id -> usuario
+-produto -> id - dados da loja
+-data adição
+
+## compras
+-id - usuario
+-produto -> id - dados da loja
+-data compra
