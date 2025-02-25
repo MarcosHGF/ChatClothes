@@ -6,6 +6,7 @@
 -instagram
 -nome
 -tamanho
+-genero
 -recomendação -> gostos 
 
 ## gostos
@@ -22,6 +23,7 @@
 -preço
 -estação
 -imagem
+-genero
 -disponibilidade
 
 ## carrinho
