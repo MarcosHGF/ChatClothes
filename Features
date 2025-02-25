@@ -1,0 +1,24 @@
+# FEATURES
+
+## Busca de Itens na loja | preços ? , disponibilidade, tamanho.etc..
+
+## Atendimento automatico (Whatsapp | instagram)
+
+## Analise de vendas (Dashboard), filtragem : Periodo, Caracteristica
+
+## Politicas de trocas e venda
+
+## Identificação de padrões do cliente, e recomendação de peças
+
+## Spam de anúncio
+
+# CLIENT
+
+## User
+-chat bot
+-instagram
+-whatsapp
+
+## Admin
+-acesso ao dashboard (grafico caracteristicas, trendings, best seller, mais recomendados)
+-acesso ao banco de dados|estoque(informações do usuário, itens no estoque)
