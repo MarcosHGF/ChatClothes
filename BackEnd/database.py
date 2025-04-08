@@ -18,10 +18,19 @@ def conectar_bd():
         )
     ''')
 
-    # Tabela de clientes
+    # Tabela de clientes whatsapp
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS clientes (
             celular TEXT PRIMARY KEY,
+            nome TEXT NOT NULL,
+            caracteristicas_pesquisadas TEXT
+        )
+    ''')
+
+    # Tabela de Clientes Instagram
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clientes (
+            conta TEXT PRIMARY KEY,
             nome TEXT NOT NULL,
             caracteristicas_pesquisadas TEXT
         )
