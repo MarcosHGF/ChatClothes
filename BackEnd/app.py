@@ -4,15 +4,15 @@ def menu():
     """Menu para interagir com o banco de dados."""
     while True:
         print("\n📌 Escolha uma opção:")
-        print("(id secreto) Adicionar Produto") # deixar para funcionarios
-        print("1 Listar Produtos") # 
+        # print("(id secreto) Adicionar Produto") # deixar para funcionarios
+        print("1 Listar Produtos") # recomendação
         print("2 Buscar Produto")
         print("3 Politica de Trocas")
         print("4 Atendente Humana")
         print("5 Sair")
         opcao = input("Digite o número da opção: ")
 
-        if opcao == "1":
+        if opcao == "id_secreto":
             tipo = input("Tipo da peça: ")
             cor = input("Cor: ")
             tamanho = input("Tamanho: ")
