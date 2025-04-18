@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Loja de Roupas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Dashboard da Loja de Roupas Femininas</h1>
+
+    <!-- Resumo das Métricas -->
+    <div class="metrics">
+        <p><strong>Total de Vendas:</strong> {{ total_vendas }}</p>
+        <p><strong>Total em Estoque:</strong> {{ total_estoque }}</p>
+        <p><strong>Média de Preço:</strong> R$ {{ media_preco }}</p>
+    </div>
+
+    <!-- Gráfico de Barras -->
+    <h2>Vendas por Categoria</h2>
+    <div id="sales-chart"></div>
+
+    <!-- Tabela de Produtos -->
+    <h2>Lista de Produtos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Vendas</th>
+                <th>Estoque</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.categoria }}</td>
+                <td>{{ produto.produto }}</td>
+                <td>R$ {{ "%.2f"|format(produto.preco) }}</td>
+                <td>{{ produto.vendas }}</td>
+                <td>{{ produto.estoque }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Dados do Flask são passados como variável global
+        const produtos = {{ produtos | tojson }};
+
+        // Agrupar vendas por categoria
+        const salesByCategory = {};
+        produtos.forEach(p => {
+            if (!salesByCategory[p.categoria]) {
+                salesByCategory[p.categoria] = 0;
+            }
+            salesByCategory[p.categoria] += p.vendas;
+        });
+
+        // Criar gráfico de barras com Plotly
+        const trace = {
+            x: Object.keys(salesByCategory),
+            y: Object.values(salesByCategory),
+            type: 'bar'
+        };
+
+        const layout = {
+            title: 'Vendas por Categoria',
+            xaxis: { title: 'Categorias' },
+            yaxis: { title: 'Quantidade de Vendas' }
+        };
+
+        Plotly.newPlot('sales-chart', [trace], layout);
+    </script>
+</body>
+</html>
