@@ -1,0 +1,41 @@
+## How to Run the Dashboard Application
+
+To run this clothing inventory dashboard, you'll need to follow these steps:
+
+### Prerequisites
+
+1. Make sure you have [Node.js](https://nodejs.org/) installed (version 16.x or higher recommended)
+2. A package manager like npm (comes with Node.js) or yarn
+
+
+### Step 1: Create a Next.js Project
+
+```shellscript
+npx create-next-app clothing-dashboard
+cd clothing-dashboard
+```
+
+### Step 2: Install Dependencies
+
+The dashboard uses Recharts for the visualizations, so you'll need to install it:
+
+```shellscript
+npm install recharts
+# or if you use yarn
+yarn add recharts
+```
+
+### Step 3: Add the Files
+
+1. Copy the `dashboard.tsx` file to the root of your project
+2. Copy the `dashboard.css` file to the root of your project
+3. Replace the content of `app/page.tsx` with the code I provided
+
+
+### Step 4: Run the Development Server
+
+```shellscript
+npm run dev
+# or if you use yarn
+yarn dev
+```
