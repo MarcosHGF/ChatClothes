@@ -4,7 +4,7 @@ import pandas as pd
 app = Flask(__name__)
 
 # Caminho para os dados fictícios
-DATA_PATH = "data/fakedata.csv"
+DATA_PATH = "FlaskDashboards/data/fakedata.csv"
 
 @app.route('/')
 def index():
