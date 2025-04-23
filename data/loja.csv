@@ -9,3 +9,13 @@ id,tipo,cor,tamanho,preco,estacao,imagem,genero,disponibilidade
 8,Moletom,Cinza,GG,129.90,Outono,moletom_cinza.jpg,Unissex,Disponivel
 9,Vestido,Florido,M,99.90,Primavera,vestido_florido.jpg,Feminino,Disponivel
 10,Bermuda,Bege,M,44.90,Verao,bermuda_bege.jpg,Masculino,Disponivel
+11,Cropped,Amarelo,P,54.90,Verao,cropped_amarelo.jpg,Feminino,Disponivel
+12,Casaco,Marrom,GG,139.90,Inverno,casaco_marrom.jpg,Masculino,Disponivel
+13,Macacão,Preto,M,119.90,Outono,macacao_preto.jpg,Feminino,Esgotado
+14,Camiseta,Verde,G,52.90,Verao,camiseta_verde.jpg,Unissex,Disponivel
+15,Calça,Branca,M,94.90,Primavera,calca_branca.jpg,Feminino,Disponivel
+16,Jaqueta,Couro,G,199.90,Outono,jaqueta_couro.jpg,Masculino,Esgotado
+17,Regata,Azul Claro,P,34.90,Verao,regata_azul.jpg,Feminino,Disponivel
+18,Sobretudo,Preto,GG,229.90,Inverno,sobretudo_preto.jpg,Unissex,Disponivel
+19,Blazer,Cinza,M,109.90,Outono,blazer_cinza.jpg,Masculino,Disponivel
+20,Saia,Branca,G,64.90,Primavera,saia_branca.jpg,Feminino,Esgotado

@@ -14,6 +14,7 @@ To run this clothing inventory dashboard, you'll need to follow these steps:
 npx create-next-app clothing-dashboard
 cd clothing-dashboard
 ```
+### DON'T NEED TO INSTALL TAILWIND
 
 ### Step 2: Install Dependencies
 
