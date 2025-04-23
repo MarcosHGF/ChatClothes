@@ -1,6 +1,7 @@
 import pandas as pd
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import math  # For handling NaN and Infinity
 
 app = Flask(__name__)
 CORS(app)
@@ -8,6 +9,17 @@ CORS(app)
 # Load data from CSV using pandas
 def load_data_from_csv(file_path):
     df = pd.read_csv(file_path)
+    
+    # Ensure numeric columns exist and replace NaN/invalid values with defaults
+    numeric_columns = ["vendas", "estoque", "preco"]
+    for col in numeric_columns:
+        if col not in df.columns:
+            df[col] = 0  # Initialize column if missing
+        else:
+            df[col] = df[col].apply(
+                lambda x: 0 if (pd.isna(x) or math.isnan(x) if isinstance(x, float) else False) else x
+            )
+    
     return df.to_dict(orient='records')
 
 # Save data back to CSV
@@ -35,7 +47,7 @@ def sell_item(item_id):
 
     # Decrement stock and increment sales
     item["estoque"] -= 1
-    item["vendas"] = item.get("vendas", 0) + 1
+    item["vendas"] = item.get("vendas", 0) + 1  # Ensure 'vendas' is initialized to 0 if missing
 
     # Save updated data back to CSV
     save_data_to_csv(file_path, clothing_items)
