@@ -93,12 +93,12 @@ export default function Dashboard() {
   };
 
   // Handle filter change
-  const handleFilterChange = (filterKey: string, value: string) => {
+  /*const handleFilterChange = (filterKey: string, value: string) => {
     setActiveFilters((prev) => ({
       ...prev,
       [filterKey]: value,
     }));
-  };
+  };*/
 
   // Prepare data for charts
   const prepareTypeData = () => {
