@@ -229,6 +229,7 @@ export default function Dashboard() {
   // Calculate summary statistics
   const totalItems = filteredData.length
   const totalValue = filteredData.reduce((sum, item) => sum + item.preco * item.estoque, 0).toFixed(2)
+  const totalSalesValue = filteredData.reduce((sum, item) => sum + item.preco * item.vendas, 0).toFixed(2)
   const availableItems = filteredData.filter((item) => item.estoque > 0).length
   const outOfStockItems = filteredData.filter((item) => item.estoque === 0).length
 
@@ -354,6 +355,10 @@ export default function Dashboard() {
             <div className="summary-card">
               <h3>Total Value</h3>
               <p>R$ {totalValue}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Total Sales Value</h3>
+              <p>R$ {totalSalesValue}</p>
             </div>
             <div className="summary-card">
               <h3>Available</h3>

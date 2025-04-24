@@ -25,6 +25,7 @@
   --green: #10b981;
   --purple: #8b5cf6;
   --orange: #f97316;
+  --pink: #ec4899;
   --blue-hover: #2563eb;
 }
 
@@ -54,6 +55,7 @@
   --green: #10b981;
   --purple: #8b5cf6;
   --orange: #f97316;
+  --pink: #ec4899;
   --blue-hover: #60a5fa;
 }
 
@@ -234,6 +236,10 @@ body {
 
 .summary-card:nth-child(4) {
   border-top-color: var(--orange);
+}
+
+.summary-card:nth-child(5) {
+  border-top-color: #ec4899; /* Pink */
 }
 
 .summary-card h3 {
