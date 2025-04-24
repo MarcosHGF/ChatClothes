@@ -17,3 +17,11 @@ Não é um atendente humano: Apesar de oferecer interações inteligentes, o Cha
 Não é apenas um FAQ: O sistema vai além de respostas prontas, utilizando dados de vendas e preferências dos clientes para oferecer recomendações personalizadas.
 
 Com o ChatClothes, lojas de roupas podem oferecer um atendimento ágil e eficiente, proporcionando uma experiência mais interativa e personalizada aos seus clientes.
+
+## Ainda a desenvolver
+
+Vendas filtradas por mês
+Ao clicar no painel resumido, filtrar as informações
+implementar IA e analises no insights
+Integrar BackEnd no twilio e instagramAPI
+...
