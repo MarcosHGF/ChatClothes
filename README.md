@@ -21,7 +21,11 @@ Com o ChatClothes, lojas de roupas podem oferecer um atendimento ágil e eficien
 ## Ainda a desenvolver
 
 Vendas filtradas por mês
+
 Ao clicar no painel resumido, filtrar as informações
+
 implementar IA e analises no insights
+
 Integrar BackEnd no twilio e instagramAPI
+
 ...
