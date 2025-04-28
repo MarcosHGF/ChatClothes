@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, Lightbulb } from "lucide-react"
 import "./dashboard.css"
 
 // Define the type for our clothing items
@@ -28,6 +28,13 @@ interface ClothingItem {
   genero: string
   estoque: number // Stock quantity
   vendas: number // Number of items sold
+}
+
+// Add interface for monthly sales data
+interface MonthlySalesData {
+  month: string
+  sales: number
+  value: number
 }
 
 // Color palette for charts
@@ -45,7 +52,7 @@ const COLORS = [
 ]
 
 // Chart types
-type ChartType = "type" | "color" | "price" | "gender" | "season" | "availability" | "sales"
+type ChartType = "type" | "color" | "price" | "gender" | "season" | "availability" | "sales" | "monthly"
 
 export default function Dashboard() {
   const [data, setData] = useState<ClothingItem[]>([])
@@ -55,6 +62,7 @@ export default function Dashboard() {
   const [activeChart, setActiveChart] = useState<ChartType | null>(null)
   const [loading, setLoading] = useState(true) // Track loading state
   const [darkMode, setDarkMode] = useState(false)
+  const [monthlySalesData, setMonthlySalesData] = useState<MonthlySalesData[]>([])
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -75,6 +83,18 @@ export default function Dashboard() {
         const result: ClothingItem[] = await response.json()
         setData(result)
         setFilteredData(result) // Initialize filtered data with all items
+
+        // Also fetch monthly sales data
+        try {
+          const monthlySalesResponse = await fetch("http://localhost:5000/api/monthly-sales")
+          if (monthlySalesResponse.ok) {
+            const monthlySales: MonthlySalesData[] = await monthlySalesResponse.json()
+            setMonthlySalesData(monthlySales)
+          }
+        } catch (error) {
+          console.error("Error fetching monthly sales data:", error)
+          // If we can't fetch monthly data, we'll show a message in the UI
+        }
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -100,14 +120,6 @@ export default function Dashboard() {
     })
     return Array.from(values)
   }
-
-  // Handle filter change
-  /*const handleFilterChange = (filterKey: string, value: string) => {
-    setActiveFilters((prev) => ({
-      ...prev,
-      [filterKey]: value,
-    }));
-  };*/
 
   // Prepare data for charts
   const prepareTypeData = () => {
@@ -232,6 +244,8 @@ export default function Dashboard() {
   const totalSalesValue = filteredData.reduce((sum, item) => sum + item.preco * item.vendas, 0).toFixed(2)
   const availableItems = filteredData.filter((item) => item.estoque > 0).length
   const outOfStockItems = filteredData.filter((item) => item.estoque === 0).length
+  const totalSales = filteredData.reduce((sum, item) => sum + item.vendas, 0)
+  const estimatedProfit = filteredData.reduce((sum, item) => sum + item.preco * 0.3 * item.vendas, 0).toFixed(2)
 
   // Clear all filters
   const clearFilters = () => {
@@ -239,23 +253,37 @@ export default function Dashboard() {
     setSearchTerm("")
   }
 
+  // Navigate to insights page
+  const goToInsights = () => {
+    window.location.href = "/insights"
+  }
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="header-content">
           <h1>Clothing Inventory Dashboard</h1>
-          <button
-            className="theme-toggle-button"
-            onClick={toggleDarkMode}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+          <div className="header-actions">
+            <button className="clear-button" onClick={goToInsights} aria-label="View AI Insights">
+              <Lightbulb size={18} />
+              <span>AI Insights</span>
+            </button>
+            <button
+              className="theme-toggle-button"
+              onClick={toggleDarkMode}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </div>
         </div>
       </header>
 
       {loading ? (
-        <div className="loading">Loading data...</div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading inventory data...</div>
+        </div>
       ) : (
         <>
           {/* Search and filter components */}
@@ -368,6 +396,14 @@ export default function Dashboard() {
               <h3>Out of Stock</h3>
               <p>{outOfStockItems}</p>
             </div>
+            <div className="summary-card">
+              <h3>Total Sales Units</h3>
+              <p>{totalSales}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Estimated Profit</h3>
+              <p>R$ {estimatedProfit}</p>
+            </div>
           </div>
 
           {/* Chart selector */}
@@ -410,6 +446,12 @@ export default function Dashboard() {
                 onClick={() => setActiveChart("sales")}
               >
                 By Sales
+              </button>
+              <button
+                className={`chart-button ${activeChart === "monthly" ? "active" : ""}`}
+                onClick={() => setActiveChart("monthly")}
+              >
+                Monthly Sales
               </button>
             </div>
           </div>
@@ -541,6 +583,42 @@ export default function Dashboard() {
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "monthly" && (
+                <div className="chart-card">
+                  <h3>Monthly Sales</h3>
+                  {monthlySalesData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={400}>
+                      <BarChart data={monthlySalesData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar yAxisId="left" dataKey="sales" name="Units Sold" fill="#8884d8" />
+                        <Bar yAxisId="right" dataKey="value" name="Total Value (R$)" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="no-data-message">
+                      <p>Monthly sales data is not available.</p>
+                      <p>Please connect to the API endpoint: /api/monthly-sales</p>
+                      <p>Expected data format:</p>
+                      <pre>
+                        {JSON.stringify(
+                          [
+                            { month: "Jan", sales: 120, value: 5400 },
+                            { month: "Feb", sales: 145, value: 6200 },
+                            // etc.
+                          ],
+                          null,
+                          2,
+                        )}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

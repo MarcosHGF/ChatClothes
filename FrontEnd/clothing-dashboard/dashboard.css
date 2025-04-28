@@ -501,4 +501,346 @@ body {
   .clear-button {
     width: 100%;
   }
+
+  /* Add this to your existing CSS */
+.no-data-message {
+  padding: 30px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.no-data-message pre {
+  text-align: left;
+  background-color: var(--button-background);
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 15px;
+  overflow: auto;
+  font-size: 12px;
+  color: var(--foreground);
+}
+
+/* Improved Navigation Buttons */
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.nav-button:active {
+  transform: translateY(0);
+}
+
+.insights-button {
+  background-color: var(--blue);
+  color: white;
+  margin-right: 12px;
+}
+
+.insights-button:hover {
+  background-color: var(--blue-hover);
+}
+
+.back-button {
+  background-color: var(--button-background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.back-button:hover {
+  background-color: var(--button-hover);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Improved Insights Page Styles */
+.insights-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.insights-header {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.insights-header h1 {
+  font-size: 28px;
+  color: var(--heading);
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+/* Tabs Navigation */
+.insights-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 30px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.insights-tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.insights-tab {
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insights-tab:hover {
+  color: var(--heading);
+}
+
+.insights-tab.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+
+.insights-section {
+  margin-bottom: 40px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.insights-section h2 {
+  font-size: 22px;
+  color: var(--heading);
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.insight-card {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  border: 1px solid var(--card-border);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.insight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px var(--card-shadow-hover);
+}
+
+.insight-card h3 {
+  font-size: 18px;
+  color: var(--heading);
+  margin-bottom: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insight-card p {
+  color: var(--foreground);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.insight-card.primary {
+  border-top: 4px solid var(--blue);
+}
+
+.insight-card.success {
+  border-top: 4px solid var(--green);
+}
+
+.insight-card.warning {
+  border-top: 4px solid var(--orange);
+}
+
+.insight-card.info {
+  border-top: 4px solid var(--purple);
+}
+
+.insight-card .card-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  opacity: 0.15;
+  color: var(--heading);
+}
+
+.top-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background-color: var(--card-background);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  border: 1px solid var(--card-border);
+}
+
+.top-items-table th,
+.top-items-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.top-items-table th {
+  background-color: var(--table-header);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.top-items-table tr:last-child td {
+  border-bottom: none;
+}
+
+.top-items-table tr:hover td {
+  background-color: var(--table-row-hover);
+}
+
+.prediction-chart {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  border: 1px solid var(--card-border);
+  margin-bottom: 30px;
+}
+
+.prediction-chart h3 {
+  font-size: 18px;
+  color: var(--heading);
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.chart-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dark .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--blue);
+}
+
+.loading-text {
+  font-size: 18px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.section-card {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  border: 1px solid var(--card-border);
+  margin-bottom: 30px;
+}
+
+.section-card h3 {
+  font-size: 20px;
+  color: var(--heading);
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 }
