@@ -92,9 +92,9 @@ export default function Insights() {
           { month: "Jul", predicted: 550, actual: 530 },
           { month: "Aug", predicted: 500, actual: 520 },
           { month: "Sep", predicted: 480, actual: 490 },
-          { month: "Oct", predicted: 520, actual: null },
-          { month: "Nov", predicted: 550, actual: null },
-          { month: "Dec", predicted: 600, actual: null },
+          { month: "Oct", predicted: 520, actual: 320 },
+          { month: "Nov", predicted: 550, actual: 520 },
+          { month: "Dec", predicted: 600, actual: 670 },
         ])
 
         // Sample AI insights

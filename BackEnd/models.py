@@ -1,80 +1,85 @@
-from database import conectar_bd
+import csv
 from interprete import interpretar_busca
 
-def adicionar_produto(tipo, cor, tamanho, preco, imagem, quantidade):
-    """Adiciona um produto ao banco de dados."""
-    conn = conectar_bd()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        INSERT INTO produtos (tipo, cor, tamanho, preco, imagem, quantidade)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (tipo, cor, tamanho, preco, imagem, quantidade))
+ARQUIVO_CSV = "data/loja.csv"
 
-    conn.commit()
-    conn.close()
+def ler_produtos():
+    """Lê os produtos do arquivo CSV."""
+    with open(ARQUIVO_CSV, newline='', encoding='utf-8') as f:
+        return list(csv.DictReader(f))
+
+def escrever_produtos(produtos):
+    """Escreve a lista de produtos no CSV."""
+    with open(ARQUIVO_CSV, 'w', newline='', encoding='utf-8') as f:
+        campos = produtos[0].keys() if produtos else ["id", "tipo", "cor", "tamanho", "preco", "estacao", "imagem", "genero", "estoque", "vendas"]
+        writer = csv.DictWriter(f, fieldnames=campos)
+        writer.writeheader()
+        writer.writerows(produtos)
+
+def gerar_novo_id(produtos):
+    """Gera o próximo ID disponível."""
+    if not produtos:
+        return 1
+    return max(int(p["id"]) for p in produtos) + 1
+
+def adicionar_produto(tipo, cor, tamanho, preco, imagem, quantidade):
+    produtos = ler_produtos()
+    novo_produto = {
+        "id": gerar_novo_id(produtos),
+        "tipo": tipo,
+        "cor": cor,
+        "tamanho": tamanho,
+        "preco": preco,
+        "estacao": "N/A",
+        "imagem": imagem,
+        "genero": "Unissex",
+        "estoque": quantidade,
+        "vendas": 0
+    }
+    produtos.append(novo_produto)
+    escrever_produtos(produtos)
     print(f"✅ Produto '{tipo} {cor} {tamanho}' adicionado com sucesso!")
 
 def listar_produtos():
-    """Lista todos os produtos disponíveis."""
-    conn = conectar_bd()
-    cursor = conn.cursor()
-    
-    cursor.execute("SELECT id, tipo, cor, tamanho, preco, imagem, quantidade FROM produtos WHERE quantidade > 0")
-    produtos = cursor.fetchall()
-    conn.close()
+    produtos = ler_produtos()
+    produtos_disponiveis = [p for p in produtos if int(p["estoque"]) > 0]
 
-    if not produtos:
+    if not produtos_disponiveis:
         return "😞 Nenhum produto disponível no momento."
 
     resposta = "👕 Produtos disponíveis:\n"
-    for p in produtos:
-        resposta += f"\n🛍 ID: {p[0]} - {p[1]} - {p[2]}, Tamanho {p[3]}\n💲 Preço: R$ {p[4]:.2f}\n📸 Imagem: {p[5]}\n📦 Estoque: {p[6]}\n"
+    for p in produtos_disponiveis:
+        resposta += f"\n🛍 ID: {p['id']} - {p['tipo']} - {p['cor']}, Tamanho {p['tamanho']}\n💲 Preço: R$ {float(p['preco']):.2f}\n📸 Imagem: {p['imagem']}\n📦 Estoque: {p['estoque']}\n"
     return resposta
 
 def buscar_produto(input_usuario):
-    """Busca produtos no banco de dados de acordo com os filtros de busca."""
-    filtros = interpretar_busca(input_usuario)
-    
-    if "Nenhum filtro válido encontrado" in filtros:
-        return filtros
+    filtros_info = interpretar_busca(input_usuario)
+    if not isinstance(filtros_info, dict):
+        return "❌ Erro: a interpretação da busca falhou. Nenhum filtro válido encontrado."
 
-    tipo, cor, tamanho = None, None, None
+    tipo = filtros_info.get("tipo")
+    cor = filtros_info.get("cor")
+    tamanho = filtros_info.get("tamanho")
 
-    # Extrair os filtros da mensagem
-    for filtro in filtros.split(", "):
-        if "Tipo:" in filtro:
-            tipo = filtro.split(": ")[1]
-        if "Cor:" in filtro:
-            cor = filtro.split(": ")[1]
-        if "Tamanho:" in filtro:
-            tamanho = filtro.split(": ")[1]
-    
-    conn = conectar_bd()
-    cursor = conn.cursor()
+    produtos = ler_produtos()
+    resultados = []
 
-    # Construção da consulta com base nos filtros
-    query = "SELECT id, tipo, cor, tamanho, preco, imagem, quantidade FROM produtos WHERE quantidade > 0"
-    params = []
+    for p in produtos:
+        if int(p["estoque"]) <= 0:
+            continue
+        if tipo and tipo.lower() not in p["tipo"].lower():
+            continue
+        if cor and cor.lower() not in p["cor"].lower():
+            continue
+        if tamanho and tamanho.upper() != p["tamanho"].upper():
+            continue
+        resultados.append(p)
 
-    if tipo:
-        query += " AND tipo LIKE ?"
-        params.append(f"%{tipo}%")
-    if cor:
-        query += " AND cor LIKE ?"
-        params.append(f"%{cor}%")
-    if tamanho:
-        query += " AND tamanho LIKE ?"
-        params.append(f"%{tamanho}%")
-
-    cursor.execute(query, tuple(params))
-    produtos = cursor.fetchall()
-    conn.close()
-
-    if not produtos:
+    if not resultados:
         return "🔍 Nenhum produto encontrado com os filtros aplicados."
 
     resposta = "🔍 Resultados encontrados:\n"
-    for p in produtos:
-        resposta += f"\n🛍 ID: {p[0]} - {p[1]} - {p[2]}, Tamanho {p[3]}\n💲 Preço: R$ {p[4]:.2f}\n📸 Imagem: {p[5]}\n📦 Estoque: {p[6]}\n"
+    for p in resultados:
+        resposta += f"\n🛍 ID: {p['id']} - {p['tipo']} - {p['cor']}, Tamanho {p['tamanho']}\n💲 Preço: R$ {float(p['preco']):.2f}\n📸 Imagem: {p['imagem']}\n📦 Estoque: {p['estoque']}\n"
     return resposta
+

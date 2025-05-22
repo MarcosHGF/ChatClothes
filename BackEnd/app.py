@@ -30,7 +30,25 @@ def menu():
             print(buscar_produto(termo))
             
         elif opcao == "3":
-            print("Descrição da politica de trocas")
+            print('''🛍️ Política de Trocas
+Você pode trocar seu produto em até 7 dias após o recebimento.
+
+✅ Condições para troca:
+A peça deve estar sem sinais de uso, com etiquetas e embalagem original.
+
+É necessário apresentar a nota fiscal ou comprovante da compra.
+
+Não trocamos produtos com cheiro, manchas, ajustes ou danificados por mau uso.
+
+📦 Como solicitar a troca:
+Entre em contato pelo nosso atendimento com o número do pedido e o motivo da troca.
+
+Nossa equipe irá instruir sobre o envio da peça.
+
+⚠️ Itens que não podem ser trocados:
+Peças promocionais ou em liquidação.
+
+Acessórios íntimos, como brincos, por motivo de higiene.''')
             
         elif opcao == "4":
             print("Encaminhando para atendente humana...")
