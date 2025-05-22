@@ -1,6 +1,5 @@
-"use client";
-import type React from "react";
-import { useState, useEffect } from "react";
+"use client"
+import { useState, useEffect } from "react"
 import {
   BarChart,
   Bar,
@@ -13,169 +12,191 @@ import {
   Legend,
   ResponsiveContainer,
   Cell,
-} from "recharts";
-import "./dashboard.css";
+} from "recharts"
+import { Moon, Sun, Lightbulb } from "lucide-react"
+import "./dashboard.css"
 
 // Define the type for our clothing items
 interface ClothingItem {
-  id: number;
-  tipo: string;
-  cor: string;
-  tamanho: string;
-  preco: number;
-  estacao: string;
-  imagem: string;
-  genero: string;
-  estoque: number; // Stock quantity
-  vendas: number; // Number of items sold
+  id: number
+  tipo: string
+  cor: string
+  tamanho: string
+  preco: number
+  estacao: string
+  imagem: string
+  genero: string
+  estoque: number // Stock quantity
+  vendas: number // Number of items sold
+}
+
+// Add interface for monthly sales data
+interface MonthlySalesData {
+  month: string
+  sales: number
+  value: number
 }
 
 // Color palette for charts
 const COLORS = [
-  "#4e79a7",
-  "#f28e2c",
-  "#e15759",
-  "#76b7b2",
-  "#59a14f",
-  "#edc949",
-  "#af7aa1",
-  "#ff9da7",
-  "#9c755f",
-  "#bab0ab",
-];
+  "#3b82f6", // Blue
+  "#10b981", // Green
+  "#f97316", // Orange
+  "#8b5cf6", // Purple
+  "#ec4899", // Pink
+  "#06b6d4", // Cyan
+  "#f59e0b", // Amber
+  "#6366f1", // Indigo
+  "#ef4444", // Red
+  "#14b8a6", // Teal
+]
 
 // Chart types
-type ChartType =
-  | "type"
-  | "color"
-  | "price"
-  | "gender"
-  | "season"
-  | "availability"
-  | "sales";
+type ChartType = "type" | "color" | "price" | "gender" | "season" | "availability" | "sales" | "monthly"
 
 export default function Dashboard() {
-  const [data, setData] = useState<ClothingItem[]>([]);
-  const [filteredData, setFilteredData] = useState<ClothingItem[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
-  const [activeChart, setActiveChart] = useState<ChartType | null>(null);
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [data, setData] = useState<ClothingItem[]>([])
+  const [filteredData, setFilteredData] = useState<ClothingItem[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({})
+  const [activeChart, setActiveChart] = useState<ChartType | null>(null)
+  const [loading, setLoading] = useState(true) // Track loading state
+  const [darkMode, setDarkMode] = useState(false)
+  const [monthlySalesData, setMonthlySalesData] = useState<MonthlySalesData[]>([])
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode
+    setDarkMode(newDarkMode)
+    document.documentElement.classList.toggle("dark", newDarkMode)
+    localStorage.setItem("darkMode", newDarkMode ? "true" : "false")
+  }
 
   // Fetch data from Flask backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/clothing"); // Flask backend URL
+        const response = await fetch("http://localhost:5000/api/clothing") // Flask backend URL
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error("Failed to fetch data")
         }
-        const result: ClothingItem[] = await response.json();
-        setData(result);
-        setFilteredData(result); // Initialize filtered data with all items
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false); // Stop loading
-      }
-    };
+        const result: ClothingItem[] = await response.json()
+        setData(result)
+        setFilteredData(result) // Initialize filtered data with all items
 
-    fetchData();
-  }, []);
+        // Also fetch monthly sales data
+        try {
+          const monthlySalesResponse = await fetch("http://localhost:5000/api/monthly-sales")
+          if (monthlySalesResponse.ok) {
+            const monthlySales: MonthlySalesData[] = await monthlySalesResponse.json()
+            setMonthlySalesData(monthlySales)
+          }
+        } catch (error) {
+          console.error("Error fetching monthly sales data:", error)
+          // If we can't fetch monthly data, we'll show a message in the UI
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      } finally {
+        setLoading(false) // Stop loading
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  // Initialize dark mode from localStorage
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem("darkMode") === "true"
+    setDarkMode(savedDarkMode)
+    document.documentElement.classList.toggle("dark", savedDarkMode)
+  }, [])
 
   // Function to get unique values for a specific key
   const getUniqueValues = (key: keyof ClothingItem) => {
-    const values = new Set<string>();
+    const values = new Set<string>()
     data.forEach((item) => {
-      values.add(String(item[key]));
-    });
-    return Array.from(values);
-  };
-
-  // Handle filter change
-  /*const handleFilterChange = (filterKey: string, value: string) => {
-    setActiveFilters((prev) => ({
-      ...prev,
-      [filterKey]: value,
-    }));
-  };*/
+      values.add(String(item[key]))
+    })
+    return Array.from(values)
+  }
 
   // Prepare data for charts
   const prepareTypeData = () => {
-    const typeCount: Record<string, number> = {};
+    const typeCount: Record<string, number> = {}
     filteredData.forEach((item) => {
-      typeCount[item.tipo] = (typeCount[item.tipo] || 0) + 1;
-    });
+      typeCount[item.tipo] = (typeCount[item.tipo] || 0) + 1
+    })
     return Object.keys(typeCount).map((key) => ({
       name: key,
       value: typeCount[key],
-    }));
-  };
+    }))
+  }
 
   const prepareColorData = () => {
-    const colorCount: Record<string, number> = {};
+    const colorCount: Record<string, number> = {}
     filteredData.forEach((item) => {
-      colorCount[item.cor] = (colorCount[item.cor] || 0) + 1;
-    });
+      colorCount[item.cor] = (colorCount[item.cor] || 0) + 1
+    })
     return Object.keys(colorCount).map((key) => ({
       name: key,
       value: colorCount[key],
-    }));
-  };
+    }))
+  }
 
   const preparePriceByTypeData = () => {
-    const priceByType: Record<string, number[]> = {};
+    const priceByType: Record<string, number[]> = {}
     filteredData.forEach((item) => {
       if (!priceByType[item.tipo]) {
-        priceByType[item.tipo] = [];
+        priceByType[item.tipo] = []
       }
-      priceByType[item.tipo].push(item.preco);
-    });
+      priceByType[item.tipo].push(item.preco)
+    })
     return Object.keys(priceByType).map((key) => ({
       name: key,
       value: priceByType[key].reduce((a, b) => a + b, 0) / priceByType[key].length,
-    }));
-  };
+    }))
+  }
 
   const prepareGenderData = () => {
-    const genderCount: Record<string, number> = {};
+    const genderCount: Record<string, number> = {}
     filteredData.forEach((item) => {
-      genderCount[item.genero] = (genderCount[item.genero] || 0) + 1;
-    });
+      genderCount[item.genero] = (genderCount[item.genero] || 0) + 1
+    })
     return Object.keys(genderCount).map((key) => ({
       name: key,
       value: genderCount[key],
-    }));
-  };
+    }))
+  }
 
   const prepareSeasonData = () => {
-    const seasonCount: Record<string, number> = {};
+    const seasonCount: Record<string, number> = {}
     filteredData.forEach((item) => {
-      seasonCount[item.estacao] = (seasonCount[item.estacao] || 0) + 1;
-    });
+      seasonCount[item.estacao] = (seasonCount[item.estacao] || 0) + 1
+    })
     return Object.keys(seasonCount).map((key) => ({
       name: key,
       value: seasonCount[key],
-    }));
-  };
+    }))
+  }
 
   const prepareSalesData = () => {
-    const salesCount: Record<string, number> = {};
+    const salesCount: Record<string, number> = {}
     filteredData.forEach((item) => {
-      salesCount[item.tipo] = (salesCount[item.tipo] || 0) + item.vendas;
-    });
+      salesCount[item.tipo] = (salesCount[item.tipo] || 0) + item.vendas
+    })
     return Object.keys(salesCount).map((key) => ({
       name: key,
       value: salesCount[key],
-    }));
-  };
+    }))
+  }
 
   // Apply filters and search
   useEffect(() => {
-    let result = [...data];
+    let result = [...data]
     // Apply search term
     if (searchTerm) {
-      const term = searchTerm.toLowerCase();
+      const term = searchTerm.toLowerCase()
       result = result.filter(
         (item) =>
           item.tipo.toLowerCase().includes(term) ||
@@ -185,62 +206,84 @@ export default function Dashboard() {
           item.genero.toLowerCase().includes(term) ||
           item.id.toString().includes(term) ||
           item.preco.toString().includes(term),
-      );
+      )
     }
     // Apply active filters
     Object.entries(activeFilters).forEach(([key, value]) => {
       if (value && value !== "all") {
         result = result.filter((item) => {
-          const itemValue = item[key as keyof ClothingItem];
-          return itemValue.toString().toLowerCase() === value.toLowerCase();
-        });
+          const itemValue = item[key as keyof ClothingItem]
+          return itemValue.toString().toLowerCase() === value.toLowerCase()
+        })
       }
-    });
-    setFilteredData(result);
-  }, [searchTerm, activeFilters, data]);
+    })
+    setFilteredData(result)
+  }, [searchTerm, activeFilters, data])
 
   // Handle selling an item
   const handleSell = async (itemId: number) => {
     try {
       const response = await fetch(`http://localhost:5000/api/sell/${itemId}`, {
         method: "POST",
-      });
+      })
       if (!response.ok) {
-        throw new Error("Failed to register sale");
+        throw new Error("Failed to register sale")
       }
-      const updatedItem = await response.json();
+      const updatedItem = await response.json()
       // Update local state with the new data
-      setData((prevData) =>
-        prevData.map((item) => (item.id === itemId ? updatedItem.item : item)),
-      );
-      setFilteredData((prevData) =>
-        prevData.map((item) => (item.id === itemId ? updatedItem.item : item)),
-      );
+      setData((prevData) => prevData.map((item) => (item.id === itemId ? updatedItem.item : item)))
+      setFilteredData((prevData) => prevData.map((item) => (item.id === itemId ? updatedItem.item : item)))
     } catch (error) {
-      console.error("Error registering sale:", error);
+      console.error("Error registering sale:", error)
     }
-  };
+  }
 
   // Calculate summary statistics
-  const totalItems = filteredData.length;
-  const totalValue = filteredData.reduce((sum, item) => sum + item.preco * item.estoque, 0).toFixed(2);
-  const availableItems = filteredData.filter((item) => item.estoque > 0).length;
-  const outOfStockItems = filteredData.filter((item) => item.estoque === 0).length;
+  const totalItems = filteredData.length
+  const totalValue = filteredData.reduce((sum, item) => sum + item.preco * item.estoque, 0).toFixed(2)
+  const totalSalesValue = filteredData.reduce((sum, item) => sum + item.preco * item.vendas, 0).toFixed(2)
+  const availableItems = filteredData.filter((item) => item.estoque > 0).length
+  const outOfStockItems = filteredData.filter((item) => item.estoque === 0).length
+  const totalSales = filteredData.reduce((sum, item) => sum + item.vendas, 0)
+  const estimatedProfit = filteredData.reduce((sum, item) => sum + item.preco * 0.3 * item.vendas, 0).toFixed(2)
 
   // Clear all filters
   const clearFilters = () => {
-    setActiveFilters({});
-    setSearchTerm("");
-  };
+    setActiveFilters({})
+    setSearchTerm("")
+  }
+
+  // Navigate to insights page
+  const goToInsights = () => {
+    window.location.href = "/insights"
+  }
 
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Clothing Inventory Dashboard</h1>
+        <div className="header-content">
+          <h1>Clothing Inventory Dashboard</h1>
+          <div className="header-actions">
+            <button className="clear-button" onClick={goToInsights} aria-label="View AI Insights">
+              <Lightbulb size={18} />
+              <span>AI Insights</span>
+            </button>
+            <button
+              className="theme-toggle-button"
+              onClick={toggleDarkMode}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </div>
+        </div>
       </header>
 
       {loading ? (
-        <div className="loading">Loading data...</div>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading inventory data...</div>
+        </div>
       ) : (
         <>
           {/* Search and filter components */}
@@ -342,12 +385,24 @@ export default function Dashboard() {
               <p>R$ {totalValue}</p>
             </div>
             <div className="summary-card">
+              <h3>Total Sales Value</h3>
+              <p>R$ {totalSalesValue}</p>
+            </div>
+            <div className="summary-card">
               <h3>Available</h3>
               <p>{availableItems}</p>
             </div>
             <div className="summary-card">
               <h3>Out of Stock</h3>
               <p>{outOfStockItems}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Total Sales Units</h3>
+              <p>{totalSales}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Estimated Profit</h3>
+              <p>R$ {estimatedProfit}</p>
             </div>
           </div>
 
@@ -391,6 +446,12 @@ export default function Dashboard() {
                 onClick={() => setActiveChart("sales")}
               >
                 By Sales
+              </button>
+              <button
+                className={`chart-button ${activeChart === "monthly" ? "active" : ""}`}
+                onClick={() => setActiveChart("monthly")}
+              >
+                Monthly Sales
               </button>
             </div>
           </div>
@@ -524,6 +585,42 @@ export default function Dashboard() {
                   </ResponsiveContainer>
                 </div>
               )}
+              {activeChart === "monthly" && (
+                <div className="chart-card">
+                  <h3>Monthly Sales</h3>
+                  {monthlySalesData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={400}>
+                      <BarChart data={monthlySalesData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar yAxisId="left" dataKey="sales" name="Units Sold" fill="#8884d8" />
+                        <Bar yAxisId="right" dataKey="value" name="Total Value (R$)" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="no-data-message">
+                      <p>Monthly sales data is not available.</p>
+                      <p>Please connect to the API endpoint: /api/monthly-sales</p>
+                      <p>Expected data format:</p>
+                      <pre>
+                        {JSON.stringify(
+                          [
+                            { month: "Jan", sales: 120, value: 5400 },
+                            { month: "Feb", sales: 145, value: 6200 },
+                            // etc.
+                          ],
+                          null,
+                          2,
+                        )}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -603,5 +700,5 @@ export default function Dashboard() {
         </>
       )}
     </div>
-  );
+  )
 }

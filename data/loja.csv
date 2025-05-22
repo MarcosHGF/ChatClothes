@@ -1,5 +1,5 @@
 id,tipo,cor,tamanho,preco,estacao,imagem,genero,estoque,vendas
-1,Camiseta,Branco,M,49.9,Verao,camiseta_branca.jpg,Unissex,4,2
+1,Camiseta,Branco,M,49.9,Verao,camiseta_branca.jpg,Unissex,3,3
 2,Calca,Preto,G,89.9,Inverno,calca_preta.jpg,Masculino,0,0
 3,Saia,Vermelho,P,59.9,Primavera,saia_vermelha.jpg,Feminino,8,0
 4,Jaqueta,Azul,GG,149.9,Outono,jaqueta_azul.jpg,Masculino,5,0
