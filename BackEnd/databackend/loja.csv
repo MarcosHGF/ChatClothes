@@ -1,1 +1,21 @@
-
+id,tipo,cor,tamanho,preco,estacao,imagem,genero,estoque,vendas
+1,Camiseta,Branco,M,49.9,Verao,camiseta_branca.jpg,Unissex,3,3
+2,Calca,Preto,G,89.9,Inverno,calca_preta.jpg,Masculino,0,0
+3,Saia,Vermelho,P,59.9,Primavera,saia_vermelha.jpg,Feminino,8,0
+4,Jaqueta,Azul,GG,149.9,Outono,jaqueta_azul.jpg,Masculino,5,0
+5,Blusa,Rosa,M,69.9,Inverno,blusa_rosa.jpg,Feminino,2,0
+6,Short,Jeans,P,39.9,Verao,short_jeans.jpg,Feminino,0,0
+7,Camisa,Listrado,G,79.9,Primavera,camisa_listrada.jpg,Masculino,2,0
+8,Moletom,Cinza,GG,129.9,Outono,moletom_cinza.jpg,Unissex,6,1
+9,Vestido,Florido,M,99.9,Primavera,vestido_florido.jpg,Feminino,4,0
+10,Bermuda,Bege,M,44.9,Verao,bermuda_bege.jpg,Masculino,1,0
+11,Cropped,Amarelo,P,54.9,Verao,cropped_amarelo.jpg,Feminino,5,4
+12,Casaco,Marrom,GG,139.9,Inverno,casaco_marrom.jpg,Masculino,3,0
+13,Macacão,Preto,M,119.9,Outono,macacao_preto.jpg,Feminino,0,0
+14,Camiseta,Verde,G,52.9,Verao,camiseta_verde.jpg,Unissex,9,0
+15,Calça,Branca,M,94.9,Primavera,calca_branca.jpg,Feminino,4,0
+16,Jaqueta,Couro,G,199.9,Outono,jaqueta_couro.jpg,Masculino,0,0
+17,Regata,Azul Claro,P,34.9,Verao,regata_azul.jpg,Feminino,6,0
+18,Sobretudo,Preto,GG,229.9,Inverno,sobretudo_preto.jpg,Unissex,7,0
+19,Blazer,Cinza,M,109.9,Outono,blazer_cinza.jpg,Masculino,2,0
+20,Saia,Branca,G,64.9,Primavera,saia_branca.jpg,Feminino,0,0
