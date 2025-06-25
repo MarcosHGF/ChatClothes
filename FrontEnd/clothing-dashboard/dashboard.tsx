@@ -258,278 +258,447 @@ export default function Dashboard() {
     window.location.href = "/insights"
   }
 
-return (
-  <div className="dashboard-container">
-    <header className="dashboard-header">
-      <div className="header-content">
-        <h1>Painel de Estoque de Roupas</h1>
-        <div className="header-actions">
-          <button
-            className="theme-toggle-button"
-            onClick={toggleDarkMode}
-            aria-label={darkMode ? "Alternar para modo claro" : "Alternar para modo escuro"}
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-        </div>
-      </div>
-    </header>
-
-    {loading ? (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <div className="loading-text">Carregando dados do estoque...</div>
-      </div>
-    ) : (
-      <>
-        {/* Pesquisa e Filtros */}
-        <div className="search-filter-container">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Pesquisar itens..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            <button className="clear-button" onClick={clearFilters}>
-              Limpar Filtros
-            </button>
-          </div>
-          <div className="filter-tabs">
-            <div className="filter-group">
-              <label>Tipo:</label>
-              <select
-                value={activeFilters.tipo || "all"}
-                onChange={(e) => setActiveFilters({ ...activeFilters, tipo: e.target.value })}
-              >
-                <option value="all">Todos os Tipos</option>
-                {getUniqueValues("tipo").map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Cor:</label>
-              <select
-                value={activeFilters.cor || "all"}
-                onChange={(e) => setActiveFilters({ ...activeFilters, cor: e.target.value })}
-              >
-                <option value="all">Todas as Cores</option>
-                {getUniqueValues("cor").map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Tamanho:</label>
-              <select
-                value={activeFilters.tamanho || "all"}
-                onChange={(e) => setActiveFilters({ ...activeFilters, tamanho: e.target.value })}
-              >
-                <option value="all">Todos os Tamanhos</option>
-                {getUniqueValues("tamanho").map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Estação:</label>
-              <select
-                value={activeFilters.estacao || "all"}
-                onChange={(e) => setActiveFilters({ ...activeFilters, estacao: e.target.value })}
-              >
-                <option value="all">Todas as Estações</option>
-                {getUniqueValues("estacao").map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="filter-group">
-              <label>Gênero:</label>
-              <select
-                value={activeFilters.genero || "all"}
-                onChange={(e) => setActiveFilters({ ...activeFilters, genero: e.target.value })}
-              >
-                <option value="all">Todos os Gêneros</option>
-                {getUniqueValues("genero").map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Cards de Resumo */}
-        <div className="summary-cards">
-          <div className="summary-card">
-            <h3>Total de Itens</h3>
-            <p>{totalItems}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Valor Total</h3>
-            <p>R$ {totalValue}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Valor Total de Vendas</h3>
-            <p>R$ {totalSalesValue}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Disponíveis</h3>
-            <p>{availableItems}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Sem Estoque</h3>
-            <p>{outOfStockItems}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Unidades Vendidas</h3>
-            <p>{totalSales}</p>
-          </div>
-          <div className="summary-card">
-            <h3>Lucro Estimado</h3>
-            <p>R$ {estimatedProfit}</p>
-          </div>
-        </div>
-
-        {/* Seletor de Gráfico */}
-        <div className="chart-selector">
-          <h2>Visualizações</h2>
-          <p>Selecione um tipo de gráfico:</p>
-          <div className="chart-buttons">
-            <button
-              className={`chart-button ${activeChart === "type" ? "active" : ""}`}
-              onClick={() => setActiveChart("type")}
-            >
-              Por Tipo
+  return (
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <div className="header-content">
+          <h1>Clothing Inventory Dashboard</h1>
+          <div className="header-actions">
+            <button className="clear-button" onClick={goToInsights} aria-label="View AI Insights">
+              <Lightbulb size={18} />
+              <span>AI Insights</span>
             </button>
             <button
-              className={`chart-button ${activeChart === "color" ? "active" : ""}`}
-              onClick={() => setActiveChart("color")}
+              className="theme-toggle-button"
+              onClick={toggleDarkMode}
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
-              Por Cor
-            </button>
-            <button
-              className={`chart-button ${activeChart === "price" ? "active" : ""}`}
-              onClick={() => setActiveChart("price")}
-            >
-              Por Preço
-            </button>
-            <button
-              className={`chart-button ${activeChart === "gender" ? "active" : ""}`}
-              onClick={() => setActiveChart("gender")}
-            >
-              Por Gênero
-            </button>
-            <button
-              className={`chart-button ${activeChart === "season" ? "active" : ""}`}
-              onClick={() => setActiveChart("season")}
-            >
-              Por Estação
-            </button>
-            <button
-              className={`chart-button ${activeChart === "sales" ? "active" : ""}`}
-              onClick={() => setActiveChart("sales")}
-            >
-              Por Vendas
-            </button>
-            <button
-              className={`chart-button ${activeChart === "monthly" ? "active" : ""}`}
-              onClick={() => setActiveChart("monthly")}
-            >
-              Vendas Mensais
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Gráfico Ativo */}
-        {/* (As legendas internas dos gráficos já estão adequadas, pois são baseadas nos dados ou nos nomes das funções) */}
+      {loading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <div className="loading-text">Loading inventory data...</div>
+        </div>
+      ) : (
+        <>
+          {/* Search and filter components */}
+          <div className="search-filter-container">
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search items..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              <button className="clear-button" onClick={clearFilters}>
+                Clear Filters
+              </button>
+            </div>
+            <div className="filter-tabs">
+              <div className="filter-group">
+                <label>Type:</label>
+                <select
+                  value={activeFilters.tipo || "all"}
+                  onChange={(e) => setActiveFilters({ ...activeFilters, tipo: e.target.value })}
+                >
+                  <option value="all">All Types</option>
+                  {getUniqueValues("tipo").map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Color:</label>
+                <select
+                  value={activeFilters.cor || "all"}
+                  onChange={(e) => setActiveFilters({ ...activeFilters, cor: e.target.value })}
+                >
+                  <option value="all">All Colors</option>
+                  {getUniqueValues("cor").map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Size:</label>
+                <select
+                  value={activeFilters.tamanho || "all"}
+                  onChange={(e) => setActiveFilters({ ...activeFilters, tamanho: e.target.value })}
+                >
+                  <option value="all">All Sizes</option>
+                  {getUniqueValues("tamanho").map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Season:</label>
+                <select
+                  value={activeFilters.estacao || "all"}
+                  onChange={(e) => setActiveFilters({ ...activeFilters, estacao: e.target.value })}
+                >
+                  <option value="all">All Seasons</option>
+                  {getUniqueValues("estacao").map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="filter-group">
+                <label>Gender:</label>
+                <select
+                  value={activeFilters.genero || "all"}
+                  onChange={(e) => setActiveFilters({ ...activeFilters, genero: e.target.value })}
+                >
+                  <option value="all">All Genders</option>
+                  {getUniqueValues("genero").map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
 
-        {/* Tabela de Itens */}
-        <div className="table-container">
-          <h3>Itens em Estoque ({filteredData.length})</h3>
-          {filteredData.length === 0 ? (
-            <div className="no-results">Nenhum item corresponde aos filtros de busca</div>
-          ) : (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tipo</th>
-                  <th>Cor</th>
-                  <th>Tamanho</th>
-                  <th>Preço (R$)</th>
-                  <th>Estação</th>
-                  <th>Gênero</th>
-                  <th>Estoque</th>
-                  <th>Vendas</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.map((item) => (
-                  <tr key={item.id} className={item.estoque === 0 ? "out-of-stock" : ""}>
-                    <td>{item.id}</td>
-                    <td>{item.tipo}</td>
-                    <td>
-                      <span
-                        className="color-dot"
-                        style={{
-                          backgroundColor:
-                            item.cor === "Branco"
-                              ? "#ffffff"
-                              : item.cor === "Preto"
-                              ? "#000000"
-                              : item.cor === "Vermelho"
-                              ? "#ff0000"
-                              : item.cor === "Azul"
-                              ? "#0000ff"
-                              : item.cor === "Rosa"
-                              ? "#ff69b4"
-                              : item.cor === "Jeans"
-                              ? "#5f9ea0"
-                              : item.cor === "Listrado"
-                              ? "#a9a9a9"
-                              : item.cor === "Cinza"
-                              ? "#808080"
-                              : item.cor === "Florido"
-                              ? "#ff8c00"
-                              : item.cor === "Bege"
-                              ? "#f5f5dc"
-                              : "#cccccc",
-                        }}
-                      ></span>
-                      {item.cor}
-                    </td>
-                    <td>{item.tamanho}</td>
-                    <td>{item.preco.toFixed(2)}</td>
-                    <td>{item.estacao}</td>
-                    <td>{item.genero}</td>
-                    <td>{item.estoque > 0 ? `${item.estoque} em estoque` : "Sem estoque"}</td>
-                    <td>{item.vendas}</td>
-                    <td>
-                      <button onClick={() => handleSell(item.id)} disabled={item.estoque === 0}>
-                        Vender
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Summary cards */}
+          <div className="summary-cards">
+            <div className="summary-card">
+              <h3>Total Items</h3>
+              <p>{totalItems}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Total Value</h3>
+              <p>R$ {totalValue}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Total Sales Value</h3>
+              <p>R$ {totalSalesValue}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Available</h3>
+              <p>{availableItems}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Out of Stock</h3>
+              <p>{outOfStockItems}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Total Sales Units</h3>
+              <p>{totalSales}</p>
+            </div>
+            <div className="summary-card">
+              <h3>Estimated Profit</h3>
+              <p>R$ {estimatedProfit}</p>
+            </div>
+          </div>
+
+          {/* Chart selector */}
+          <div className="chart-selector">
+            <h2>Visualizations</h2>
+            <p>Select a chart type to view:</p>
+            <div className="chart-buttons">
+              <button
+                className={`chart-button ${activeChart === "type" ? "active" : ""}`}
+                onClick={() => setActiveChart("type")}
+              >
+                By Type
+              </button>
+              <button
+                className={`chart-button ${activeChart === "color" ? "active" : ""}`}
+                onClick={() => setActiveChart("color")}
+              >
+                By Color
+              </button>
+              <button
+                className={`chart-button ${activeChart === "price" ? "active" : ""}`}
+                onClick={() => setActiveChart("price")}
+              >
+                By Price
+              </button>
+              <button
+                className={`chart-button ${activeChart === "gender" ? "active" : ""}`}
+                onClick={() => setActiveChart("gender")}
+              >
+                By Gender
+              </button>
+              <button
+                className={`chart-button ${activeChart === "season" ? "active" : ""}`}
+                onClick={() => setActiveChart("season")}
+              >
+                By Season
+              </button>
+              <button
+                className={`chart-button ${activeChart === "sales" ? "active" : ""}`}
+                onClick={() => setActiveChart("sales")}
+              >
+                By Sales
+              </button>
+              <button
+                className={`chart-button ${activeChart === "monthly" ? "active" : ""}`}
+                onClick={() => setActiveChart("monthly")}
+              >
+                Monthly Sales
+              </button>
+            </div>
+          </div>
+
+          {/* Active chart */}
+          {activeChart && (
+            <div className="active-chart">
+              {activeChart === "type" && (
+                <div className="chart-card">
+                  <h3>Items by Type</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={prepareTypeData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="value" name="Count" fill="#8884d8">
+                        {prepareTypeData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "color" && (
+                <div className="chart-card">
+                  <h3>Items by Color</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <PieChart>
+                      <Pie
+                        data={prepareColorData()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={150}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {prepareColorData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "price" && (
+                <div className="chart-card">
+                  <h3>Average Price by Type</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={preparePriceByTypeData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" />
+                      <YAxis />
+                      <Tooltip formatter={(value) => [`R$ ${value.toFixed(2)}`, "Avg Price"]} />
+                      <Legend />
+                      <Bar dataKey="value" name="Average Price (R$)" fill="#82ca9d">
+                        {preparePriceByTypeData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "gender" && (
+                <div className="chart-card">
+                  <h3>Items by Gender</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <PieChart>
+                      <Pie
+                        data={prepareGenderData()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={150}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {prepareGenderData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "season" && (
+                <div className="chart-card">
+                  <h3>Items by Season</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={prepareSeasonData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="value" name="Count" fill="#ffc658">
+                        {prepareSeasonData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "sales" && (
+                <div className="chart-card">
+                  <h3>Sales by Type</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart data={prepareSalesData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="value" name="Sales" fill="#ff6f61">
+                        {prepareSalesData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {activeChart === "monthly" && (
+                <div className="chart-card">
+                  <h3>Monthly Sales</h3>
+                  {monthlySalesData.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={400}>
+                      <BarChart data={monthlySalesData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+                        <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar yAxisId="left" dataKey="sales" name="Units Sold" fill="#8884d8" />
+                        <Bar yAxisId="right" dataKey="value" name="Total Value (R$)" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="no-data-message">
+                      <p>Monthly sales data is not available.</p>
+                      <p>Please connect to the API endpoint: /api/monthly-sales</p>
+                      <p>Expected data format:</p>
+                      <pre>
+                        {JSON.stringify(
+                          [
+                            { month: "Jan", sales: 120, value: 5400 },
+                            { month: "Feb", sales: 145, value: 6200 },
+                            // etc.
+                          ],
+                          null,
+                          2,
+                        )}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
-        </div>
-      </>
-    )}
-  </div>
-)
+
+          {/* Table container */}
+          <div className="table-container">
+            <h3>Inventory Items ({filteredData.length})</h3>
+            {filteredData.length === 0 ? (
+              <div className="no-results">No items match your search criteria</div>
+            ) : (
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Price (R$)</th>
+                    <th>Season</th>
+                    <th>Gender</th>
+                    <th>Stock</th>
+                    <th>Sales</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.map((item) => (
+                    <tr key={item.id} className={item.estoque === 0 ? "out-of-stock" : ""}>
+                      <td>{item.id}</td>
+                      <td>{item.tipo}</td>
+                      <td>
+                        <span
+                          className="color-dot"
+                          style={{
+                            backgroundColor:
+                              item.cor === "Branco"
+                                ? "#ffffff"
+                                : item.cor === "Preto"
+                                  ? "#000000"
+                                  : item.cor === "Vermelho"
+                                    ? "#ff0000"
+                                    : item.cor === "Azul"
+                                      ? "#0000ff"
+                                      : item.cor === "Rosa"
+                                        ? "#ff69b4"
+                                        : item.cor === "Jeans"
+                                          ? "#5f9ea0"
+                                          : item.cor === "Listrado"
+                                            ? "#a9a9a9"
+                                            : item.cor === "Cinza"
+                                              ? "#808080"
+                                              : item.cor === "Florido"
+                                                ? "#ff8c00"
+                                                : item.cor === "Bege"
+                                                  ? "#f5f5dc"
+                                                  : "#cccccc",
+                          }}
+                        ></span>
+                        {item.cor}
+                      </td>
+                      <td>{item.tamanho}</td>
+                      <td>{item.preco.toFixed(2)}</td>
+                      <td>{item.estacao}</td>
+                      <td>{item.genero}</td>
+                      <td>{item.estoque > 0 ? `${item.estoque} in stock` : "Out of stock"}</td>
+                      <td>{item.vendas}</td>
+                      <td>
+                        <button onClick={() => handleSell(item.id)} disabled={item.estoque === 0}>
+                          Sell
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  )
 }

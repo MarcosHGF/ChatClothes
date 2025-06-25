@@ -28,7 +28,7 @@ def save_data_to_csv(file_path, data):
     df.to_csv(file_path, index=False)
 
 # Load data from CSV
-file_path = "../../data/loja.csv"
+file_path = "data/loja.csv"
 clothing_items = load_data_from_csv(file_path)
 
 @app.route('/api/clothing', methods=['GET'])
